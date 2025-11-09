@@ -1,0 +1,1 @@
+# DES646-Project-Speech-To-Text-for-hearing-impaired
