@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Summarization Results</title>
+  <style>
+    body { font-family: Arial, sans-serif; background:#fafafa; margin:40px; }
+    .container { max-width:800px; margin:auto; background:white; padding:30px; border-radius:12px; box-shadow:0 2px 8px rgba(0,0,0,0.1); }
+    .chunk { margin-bottom:20px; }
+    .transcript, .summary { background:#f9f9f9; padding:15px; border-radius:8px; }
+    button { background:#007BFF; color:white; border:none; padding:10px 16px; border-radius:6px; cursor:pointer; }
+    button:disabled { background:#ccc; cursor:not-allowed; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>📝 Summaries</h2>
+    <div id="chunk-container">
+      <h3 id="chunk-title"></h3>
+      <div class="transcript">
+        <strong>Transcript:</strong>
+        <p id="transcript"></p>
+      </div>
+      <div class="summary">
+        <strong>Summary:</strong>
+        <p id="summary"></p>
+      </div>
+    </div>
+
+    <div style="text-align:center;">
+      <button id="prev-btn" onclick="prevChunk()">Previous</button>
+      <button id="next-btn" onclick="nextChunk()">Next</button>
+    </div>
+  </div>
+
+  <script>
+    const data = {{ results | tojson | safe }};
+    let currentIndex = 0;
+
+    function renderChunk(index) {
+      const chunk = data[index];
+      document.getElementById("chunk-title").innerText = 
+        `Chunk ${index + 1} (${chunk.start.toFixed(2)}s - ${chunk.end.toFixed(2)}s)`;
+      document.getElementById("transcript").innerText = chunk.transcript;
+      document.getElementById("summary").innerText = chunk.summary;
+
+      document.getElementById("prev-btn").disabled = (index === 0);
+      document.getElementById("next-btn").disabled = (index === data.length - 1);
+    }
+
+    function nextChunk() {
+      if (currentIndex < data.length - 1) {
+        currentIndex++;
+        renderChunk(currentIndex);
+      }
+    }
+
+    function prevChunk() {
+      if (currentIndex > 0) {
+        currentIndex--;
+        renderChunk(currentIndex);
+      }
+    }
+
+    renderChunk(currentIndex);
+  </script>
+</body>
+</html>
